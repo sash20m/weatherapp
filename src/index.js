@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import WeatherBar from './ui/organisms/WeatherBar/WeatherBar';
-import HourlyBar from './ui/organisms/HourlyBar/HourlyBar';
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
 } from 'react-router-dom';
+import WeatherBar from './ui/organisms/WeatherBar/WeatherBar';
+import HourlyBar from './ui/organisms/HourlyBar/HourlyBar';
 
 ReactDOM.render(
   <React.StrictMode>
