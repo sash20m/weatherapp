@@ -1,25 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import './DailyForecastItems.scss';
+import dayjs from 'dayjs';
+import { useHistory } from 'react-router-dom';
+import { forecastData } from '../../organisms/WeatherBar/WeatherBar';
 
+interface day {
+  day: forecastData;
+  index: number;
+}
 interface Props {
-  day: {
-    day: any;
-    index: number;
-  };
-  routsData: any;
+  dayData: day;
 }
 
-const DailyForecastItems = ({ day, routsData }: Props) => {
-  const [data, setData] = useState<any | null>(null);
+const DailyForecastItems = ({ dayData }: Props) => {
+  const [data, setData] = useState<forecastData | null>(null);
   const [key, setKey] = useState<number | null>(null);
+  const history = useHistory();
 
   useEffect(() => {
-    setData(day.day);
-    setKey(day.index);
-  }, [day]);
+    setData(dayData.day);
+    setKey(dayData.index);
+  }, [dayData]);
 
-  const pickHourlyForecast = (date: any, position: number) => {
-    const newDate = new Date(date.dt * 1000);
+  const pickHourlyForecast = (date: forecastData, position: number) => {
+    const newDate = dayjs.unix(date.dt).toDate();
+
     let weekDay = '';
     if (newDate.getDay() === 0) weekDay = 'Sun';
     if (newDate.getDay() === 1) weekDay = 'Mon';
@@ -28,19 +33,22 @@ const DailyForecastItems = ({ day, routsData }: Props) => {
     if (newDate.getDay() === 4) weekDay = 'Thu';
     if (newDate.getDay() === 5) weekDay = 'Fri';
     if (newDate.getDay() === 6) weekDay = 'Sat';
-    routsData.history.push({ pathname: `/${weekDay}-forecast`, state: position });
+
+    history.push(`/${weekDay}-forecast`, { position });
   };
 
-  const getDay = (date: any) => {
+  const getDay = (forecast: forecastData) => {
+    const date = dayjs.unix(forecast.dt);
     let weekDay = '';
-    if (date.getDay() === 0) weekDay = 'Sun';
-    if (date.getDay() === 1) weekDay = 'Mon';
-    if (date.getDay() === 2) weekDay = 'Tue';
-    if (date.getDay() === 3) weekDay = 'Wed';
-    if (date.getDay() === 4) weekDay = 'Thu';
-    if (date.getDay() === 5) weekDay = 'Fri';
-    if (date.getDay() === 6) weekDay = 'Sat';
-    const newDate = date.getDate();
+
+    if (date.day() === 0) weekDay = 'Sun';
+    if (date.day() === 1) weekDay = 'Mon';
+    if (date.day() === 2) weekDay = 'Tue';
+    if (date.day() === 3) weekDay = 'Wed';
+    if (date.day() === 4) weekDay = 'Thu';
+    if (date.day() === 5) weekDay = 'Fri';
+    if (date.day() === 6) weekDay = 'Sat';
+    const newDate = date.date();
 
     return `${newDate} ${weekDay}`;
   };
@@ -48,37 +56,29 @@ const DailyForecastItems = ({ day, routsData }: Props) => {
   return (
     <>
       {data && key !== null && (
-        <div
-          className="weather-data__item"
+        <button
+          className="item"
           onClick={() => pickHourlyForecast(data, key)}
-          onKeyDown={() => {}}
-          role="button"
-          tabIndex={0}
+          type="button"
         >
-          <p className="weather-data__item__day">
-            {getDay(new Date(data.dt * 1000))}
-          </p>
-          <p className="weather-data__item__highest-temp">
+          <p className="item__day">{getDay(data)}</p>
+          <p className="item__highest-temp">
             {`${Math.round(data.temp.max)}°`}
           </p>
-          <p className="weather-data__item__lowest-temp">
-            {`${Math.round(data.temp.min)}°`}
-          </p>
+          <p className="item__lowest-temp">{`${Math.round(data.temp.min)}°`}</p>
           <div>
-            {/* rain, clouds, clear, Rain, Snow, Extreme */}
             <img
-              className="weather-data__item__weather"
+              className="item__weather"
               src={`./weatherIcons/${data.weather[0].main}.png`}
               alt="Weather"
             />
           </div>
-          <p className="weather-data__item__humidity">{`%${data.humidity}`}</p>
-          <hr className="weather-data__separator" />
-        </div>
+          <p className="item__humidity">{`%${data.humidity}`}</p>
+          <hr className="item__separator" />
+        </button>
       )}
     </>
   );
 };
-
 
 export default DailyForecastItems;

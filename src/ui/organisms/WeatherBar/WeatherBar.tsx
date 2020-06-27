@@ -1,16 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
 
 import './WeatherBar.scss';
 import { get5DaysForecast } from '../../../services/Weather.Service';
 import DailyForecast from '../../molecules/DailyForecast/DailyForecast';
 
-interface Props extends RouteComponentProps<any> {}
+interface temp {
+  max: number;
+  min: number;
+}
 
-const WeatherBar = (history: Props) => {
-  const [forecast, setForecast] = useState<any[] | null>(null);
+interface weather {
+  main: string;
+}
+
+export interface forecastData {
+  dt: number;
+  humidity: number;
+  temp: temp;
+  weather: weather[];
+}
+
+const WeatherBar: React.FC = () => {
+  const [forecast, setForecast] = useState<forecastData[] | null>(null);
+
   const getData = async () => {
     const { list } = await get5DaysForecast();
+
     setForecast(list);
   };
 
@@ -22,7 +37,7 @@ const WeatherBar = (history: Props) => {
     <div className="content">
       <div className="weather-bar">
         <p className="weather-bar__title">Daily Forecast</p>
-        {forecast && <DailyForecast data={forecast} routsData={history} />}
+        {forecast && <DailyForecast data={forecast} />}
       </div>
     </div>
   );

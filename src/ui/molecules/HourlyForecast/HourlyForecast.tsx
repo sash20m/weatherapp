@@ -1,27 +1,30 @@
-import React, { useState, useEffect } from 'react';
-
 import './HourlyForecast.scss';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import HourlyForecastItems from '../../atoms/HourlyForecastItems/HourlyForecastItems';
+import { hourlyForecast } from '../../organisms/HourlyBar/HourlyBar';
 
 interface Props {
-  data: Array<{}>;
-  location: any;
+  data: hourlyForecast[][];
 }
-const HourlyForecast = ({ location, data }: Props) => {
-  const [hourlyForecast, setHourlyForecast] = useState<any[] | null>(null);
-  const [position, setPosition] = useState<number | null>(null);
+
+const HourlyForecast = ({ data }: Props) => {
+  const [hourForecast, setHourForecast] = useState<hourlyForecast[][] | null>(
+    null
+  );
+  const [position, setPosition] = useState<number>(0);
+  const location = useLocation();
 
   useEffect(() => {
-    setPosition(location.state);
-    setHourlyForecast(data);
-  }, [data, location.state]);
+    setPosition(location.state.position);
+    setHourForecast(data);
+  }, [data, location]);
 
   return (
     <div className="weather-data">
-      {hourlyForecast &&
-        position !== null &&
-        hourlyForecast[position].map((day: any, key: number) => (
-          <HourlyForecastItems day={day} index={key} />
+      {hourForecast &&
+        hourForecast[position].map((day: any, key: number) => (
+          <HourlyForecastItems day={day} index={key} key={day.dt} />
         ))}
     </div>
   );

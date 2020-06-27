@@ -1,52 +1,70 @@
-import React, { useState, useEffect } from 'react';
-import { RouteComponentProps } from 'react-router-dom';
-
 import './HourlyBar.scss';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import dayjs from 'dayjs';
+
 import { getHourlyForecast } from '../../../services/Weather.Service';
 import HourlyForecast from '../../molecules/HourlyForecast/HourlyForecast';
 
+interface hour {
+  dt: number; // unix timestamp
+}
 
-interface Props extends RouteComponentProps<any> {}
+interface main {
+  temp: number;
+  humidity: number;
+}
 
-const HourlyBar = ({ location, history }: Props) => {
-  const [hourlyForecast, setHourlyForecast] = useState<Array<{}> | null>(null);
+interface weather {
+  main: string;
+}
+export interface hourlyForecast {
+  dt: number;
+  main: main;
+  weather: weather[];
+}
+
+const HourlyBar: React.FC = () => {
+  const [hourlyForecast, setHourlyForecast] = useState<
+    hourlyForecast[][] | null
+  >(null);
+  const history = useHistory();
 
   useEffect(() => {
     const getData = async () => {
       const { list } = await getHourlyForecast();
       let index: number = 0;
-      let oldDate = new Date(list[0].dt * 1000).getDate();
-      let hours: any = [];
-      const days: any = [];
-      list.forEach((hour: any) => {
-        if (new Date(hour.dt * 1000).getDate() === oldDate) {
+      let oldDate = dayjs.unix(list[0].dt).date();
+      let hours: hourlyForecast[] = [];
+      const days: hourlyForecast[][] = [];
+      list.forEach((hour: hourlyForecast) => {
+        if (dayjs.unix(hour.dt).date() === oldDate) {
           hours.push(hour);
           days[index] = hours;
         } else {
-          oldDate = new Date(hour.dt * 1000).getDate();
+          oldDate = dayjs.unix(hour.dt).date();
           hours.push(hour);
           days[index] = hours;
           hours = [];
-          index+=1;
+          index += 1;
         }
       });
+
       setHourlyForecast(days);
     };
     getData();
   }, []);
 
-  const goBack = () => {
-    history.push({ pathname: '/5-days-forecast' });
-  };
+  const goBack = () => history.push('/5-days-forecast');
 
   return (
     <div className="content">
-      <button type="button" onClick={goBack}>GO BACK</button>
+      <button className="content__button" type="button" onClick={goBack}>
+        GO BACK
+      </button>
       <div className="hourly-bar">
         <p className="hourly-bar__title">Hourly Forecast</p>
-        {hourlyForecast && (
-          <HourlyForecast data={hourlyForecast} location={location} />
-        )}
+        {hourlyForecast && <HourlyForecast data={hourlyForecast} />}
       </div>
     </div>
   );

@@ -1,16 +1,21 @@
-import React, { useState, useEffect } from 'react';
 import './HourlyForecastItems.scss';
+import React, { useState, useEffect } from 'react';
+import dayjs from 'dayjs';
+import dayjsPluginUTC from 'dayjs/plugin/utc';
+import { hourlyForecast } from '../../organisms/HourlyBar/HourlyBar';
 
 interface Props {
-  day: any;
+  day: hourlyForecast;
   index: number;
 }
 
 const HourlyForecastItems = ({ day }: Props) => {
-  const [data, setData] = useState<any | null>(null);
+  const [data, setData] = useState<hourlyForecast | null>(null);
 
-  const getHour = (date: any) => {
-    return new Date(date * 1000).getUTCHours();
+  dayjs.extend(dayjsPluginUTC);
+  const getHour = (date: hourlyForecast) => {
+    const dayInfo = date.dt;
+    return dayjs.unix(dayInfo).utc().hour();
   };
 
   useEffect(() => {
@@ -21,7 +26,7 @@ const HourlyForecastItems = ({ day }: Props) => {
     <>
       {data && (
         <div className="item">
-          <p className="item__hour">{`${getHour(data.dt)}:00`}</p>
+          <p className="item__hour">{`${getHour(data)}:00`}</p>
           <p className="item__temp">{`${data.main.temp}°`}</p>
           <div>
             <img
