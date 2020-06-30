@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import dayjs from 'dayjs';
 import dayjsPluginUTC from 'dayjs/plugin/utc';
-import { HourlyForecast } from '../../organisms/HourlyBar/HourlyBar';
+import { HourlyForecast } from 'ui/organisms/HourlyBar/HourlyBar';
 
 import './HourlyForecastItems.scss';
 

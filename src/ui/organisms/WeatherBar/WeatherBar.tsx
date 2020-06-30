@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-import { get5DaysForecast } from '../../../services/Weather.Service';
-import DailyForecast from '../../molecules/DailyForecast/DailyForecast';
+import Spinner from 'ui/atoms/Spinner/Spinner';
+import { get5DaysForecast } from 'services/Weather.Service';
+import DailyForecast from 'ui/molecules/DailyForecast/DailyForecast';
 
 import './WeatherBar.scss';
-import Spinner from '../../atoms/Spinner/Spinner';
 
 interface Temp {
   max: number;

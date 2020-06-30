@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 import { useLocation } from 'react-router-dom';
-import { HourlyForecast } from '../../organisms/HourlyBar/HourlyBar';
-import HourlyForecastItems from '../../atoms/HourlyForecastItems/HourlyForecastItems';
+import { HourlyForecast } from 'ui/organisms/HourlyBar/HourlyBar';
+import HourlyForecastItems from 'ui/atoms/HourlyForecastItems/HourlyForecastItems';
 
 import './HourlyForecast.scss';
 

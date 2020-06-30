@@ -13,13 +13,14 @@ module.exports = {
     sourceType: 'module',
   },
   settings: {
-    react: {
-      version: 'detect',
-    },
     'import/resolver': {
       node: {
+        paths: ['src'],
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
       },
+    },
+    react: {
+      version: 'detect',
     },
   },
   plugins: ['react', '@typescript-eslint', 'prettier'],

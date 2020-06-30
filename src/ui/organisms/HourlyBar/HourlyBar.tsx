@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react';
 
 import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
-import { getHourlyForecast } from '../../../services/Weather.Service';
-import HourForecast from '../../molecules/HourlyForecast/HourlyForecast';
-import Spinner from '../../atoms/Spinner/Spinner';
+import { getHourlyForecast } from 'services/Weather.Service';
+import HourForecast from 'ui/molecules/HourlyForecast/HourlyForecast';
+import Spinner from 'ui/atoms/Spinner/Spinner';
 
 interface Main {
   temp: number;

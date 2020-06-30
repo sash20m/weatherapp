@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 import dayjs from 'dayjs';
 import { useHistory } from 'react-router-dom';
-import { ForecastData } from '../../organisms/WeatherBar/WeatherBar';
+import { ForecastData } from 'ui/organisms/WeatherBar/WeatherBar';
 
 import './DailyForecastItems.scss';
 

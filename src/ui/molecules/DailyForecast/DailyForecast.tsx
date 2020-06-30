@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
-import DailyForecastItems from '../../atoms/DailyForecastItems/DailyForecastItems';
-import { ForecastData } from '../../organisms/WeatherBar/WeatherBar';
+import DailyForecastItems from 'ui/atoms/DailyForecastItems/DailyForecastItems';
+import { ForecastData } from 'ui/organisms/WeatherBar/WeatherBar';
 
 import './DailyForecast.scss';
 
