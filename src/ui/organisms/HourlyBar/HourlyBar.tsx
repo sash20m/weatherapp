@@ -1,33 +1,32 @@
 import './HourlyBar.scss';
 import React, { useState, useEffect } from 'react';
+
 import { useHistory } from 'react-router-dom';
 import dayjs from 'dayjs';
-
 import { getHourlyForecast } from '../../../services/Weather.Service';
-import HourlyForecast from '../../molecules/HourlyForecast/HourlyForecast';
+import HourForecast from '../../molecules/HourlyForecast/HourlyForecast';
+import Spinner from '../../atoms/Spinner/Spinner';
 
-interface hour {
-  dt: number; // unix timestamp
-}
-
-interface main {
+interface Main {
   temp: number;
   humidity: number;
 }
 
-interface weather {
+interface Weather {
   main: string;
 }
-export interface hourlyForecast {
+export interface HourlyForecast {
   dt: number;
-  main: main;
-  weather: weather[];
+  main: Main;
+  weather: Weather[];
 }
 
 const HourlyBar: React.FC = () => {
   const [hourlyForecast, setHourlyForecast] = useState<
-    hourlyForecast[][] | null
+    HourlyForecast[][] | null
   >(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const history = useHistory();
 
   useEffect(() => {
@@ -35,9 +34,9 @@ const HourlyBar: React.FC = () => {
       const { list } = await getHourlyForecast();
       let index: number = 0;
       let oldDate = dayjs.unix(list[0].dt).date();
-      let hours: hourlyForecast[] = [];
-      const days: hourlyForecast[][] = [];
-      list.forEach((hour: hourlyForecast) => {
+      let hours: HourlyForecast[] = [];
+      const days: HourlyForecast[][] = [];
+      list.forEach((hour: HourlyForecast) => {
         if (dayjs.unix(hour.dt).date() === oldDate) {
           hours.push(hour);
           days[index] = hours;
@@ -51,11 +50,14 @@ const HourlyBar: React.FC = () => {
       });
 
       setHourlyForecast(days);
+      setLoading(false);
     };
     getData();
   }, []);
 
   const goBack = () => history.push('/5-days-forecast');
+
+  if (loading) return <Spinner />;
 
   return (
     <div className="content">
@@ -64,7 +66,7 @@ const HourlyBar: React.FC = () => {
       </button>
       <div className="hourly-bar">
         <p className="hourly-bar__title">Hourly Forecast</p>
-        {hourlyForecast && <HourlyForecast data={hourlyForecast} />}
+        {hourlyForecast && <HourForecast data={hourlyForecast} />}
       </div>
     </div>
   );

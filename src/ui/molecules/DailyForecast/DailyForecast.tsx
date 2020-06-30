@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import './DailyForecast.scss';
+
 import DailyForecastItems from '../../atoms/DailyForecastItems/DailyForecastItems';
-import { forecastData } from '../../organisms/WeatherBar/WeatherBar';
+import { ForecastData } from '../../organisms/WeatherBar/WeatherBar';
+
+import './DailyForecast.scss';
 
 interface Props {
-  data: forecastData[];
+  data: ForecastData[];
 }
 
 const DailyForecast = ({ data }: Props) => {
-  const [forecast, setForecast] = useState<forecastData[] | null>(null);
+  const [forecast, setForecast] = useState<ForecastData[] | null>(null);
 
   useEffect(() => {
     setForecast(data);
@@ -17,7 +19,7 @@ const DailyForecast = ({ data }: Props) => {
   return (
     <div className="weather-data">
       {forecast &&
-        forecast.map((day: forecastData, key: number) => (
+        forecast.map((day: ForecastData, key: number) => (
           <DailyForecastItems dayData={{ day, index: key }} key={day.dt} />
         ))}
     </div>

@@ -1,25 +1,31 @@
-import './HourlyForecastItems.scss';
 import React, { useState, useEffect } from 'react';
+
 import dayjs from 'dayjs';
 import dayjsPluginUTC from 'dayjs/plugin/utc';
-import { hourlyForecast } from '../../organisms/HourlyBar/HourlyBar';
+import { HourlyForecast } from '../../organisms/HourlyBar/HourlyBar';
+
+import './HourlyForecastItems.scss';
 
 interface Props {
-  day: hourlyForecast;
+  day: HourlyForecast;
   index: number;
 }
 
 const HourlyForecastItems = ({ day }: Props) => {
-  const [data, setData] = useState<hourlyForecast | null>(null);
+  const [data, setData] = useState<HourlyForecast | null>(null);
 
-  dayjs.extend(dayjsPluginUTC);
-  const getHour = (date: hourlyForecast) => {
+  const getHour = (date: HourlyForecast) => {
     const dayInfo = date.dt;
     return dayjs.unix(dayInfo).utc().hour();
   };
 
   useEffect(() => {
-    setData(day);
+    const onSetData = () => {
+      setData(day);
+    };
+
+    onSetData();
+    dayjs.extend(dayjsPluginUTC);
   }, [day]);
 
   return (

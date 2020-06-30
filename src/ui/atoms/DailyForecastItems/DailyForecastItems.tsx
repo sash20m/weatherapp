@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import './DailyForecastItems.scss';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+
 import dayjs from 'dayjs';
 import { useHistory } from 'react-router-dom';
-import { forecastData } from '../../organisms/WeatherBar/WeatherBar';
+import { ForecastData } from '../../organisms/WeatherBar/WeatherBar';
 
-interface day {
-  day: forecastData;
+import './DailyForecastItems.scss';
+
+interface Day {
+  day: ForecastData;
   index: number;
 }
 interface Props {
-  dayData: day;
+  dayData: Day;
 }
 
 const DailyForecastItems = ({ dayData }: Props) => {
-  const [data, setData] = useState<forecastData | null>(null);
+  const [data, setData] = useState<ForecastData | null>(null);
   const [key, setKey] = useState<number | null>(null);
   const history = useHistory();
 
@@ -22,62 +24,71 @@ const DailyForecastItems = ({ dayData }: Props) => {
     setKey(dayData.index);
   }, [dayData]);
 
-  const pickHourlyForecast = (date: forecastData, position: number) => {
-    const newDate = dayjs.unix(date.dt).toDate();
+  const pickHourlyForecast = useCallback(
+    (date: ForecastData, position: number) => () => {
+      const newDate = dayjs.unix(date.dt).day();
 
-    let weekDay = '';
-    if (newDate.getDay() === 0) weekDay = 'Sun';
-    if (newDate.getDay() === 1) weekDay = 'Mon';
-    if (newDate.getDay() === 2) weekDay = 'Tue';
-    if (newDate.getDay() === 3) weekDay = 'Wed';
-    if (newDate.getDay() === 4) weekDay = 'Thu';
-    if (newDate.getDay() === 5) weekDay = 'Fri';
-    if (newDate.getDay() === 6) weekDay = 'Sat';
+      let weekDay = '';
+      if (newDate === 0) weekDay = 'Sun';
+      if (newDate === 1) weekDay = 'Mon';
+      if (newDate === 2) weekDay = 'Tue';
+      if (newDate === 3) weekDay = 'Wed';
+      if (newDate === 4) weekDay = 'Thu';
+      if (newDate === 5) weekDay = 'Fri';
+      if (newDate === 6) weekDay = 'Sat';
 
-    history.push(`/${weekDay}-forecast`, { position });
-  };
+      history.push(`/${weekDay}-forecast`, { position });
+    },
+    [history]
+  );
 
-  const getDay = (forecast: forecastData) => {
-    const date = dayjs.unix(forecast.dt);
-    let weekDay = '';
+  const getDay = useMemo(
+    () => (forecast: ForecastData) => {
+      const newDate = dayjs.unix(forecast.dt).date();
+      const date = dayjs.unix(forecast.dt).day();
 
-    if (date.day() === 0) weekDay = 'Sun';
-    if (date.day() === 1) weekDay = 'Mon';
-    if (date.day() === 2) weekDay = 'Tue';
-    if (date.day() === 3) weekDay = 'Wed';
-    if (date.day() === 4) weekDay = 'Thu';
-    if (date.day() === 5) weekDay = 'Fri';
-    if (date.day() === 6) weekDay = 'Sat';
-    const newDate = date.date();
+      let weekDay = '';
+      if (date === 0) weekDay = 'Sun';
+      if (date === 1) weekDay = 'Mon';
+      if (date === 2) weekDay = 'Tue';
+      if (date === 3) weekDay = 'Wed';
+      if (date === 4) weekDay = 'Thu';
+      if (date === 5) weekDay = 'Fri';
+      if (date === 6) weekDay = 'Sat';
 
-    return `${newDate} ${weekDay}`;
-  };
+      return `${newDate} ${weekDay}`;
+    },
+    []
+  );
+
+  const mathRound = useMemo(
+    () => (temp: number) => {
+      return Math.round(temp);
+    },
+    []
+  );
+
+  if (!data || key === null) return null;
 
   return (
-    <>
-      {data && key !== null && (
-        <button
-          className="item"
-          onClick={() => pickHourlyForecast(data, key)}
-          type="button"
-        >
-          <p className="item__day">{getDay(data)}</p>
-          <p className="item__highest-temp">
-            {`${Math.round(data.temp.max)}°`}
-          </p>
-          <p className="item__lowest-temp">{`${Math.round(data.temp.min)}°`}</p>
-          <div>
-            <img
-              className="item__weather"
-              src={`./weatherIcons/${data.weather[0].main}.png`}
-              alt="Weather"
-            />
-          </div>
-          <p className="item__humidity">{`%${data.humidity}`}</p>
-          <hr className="item__separator" />
-        </button>
-      )}
-    </>
+    <button
+      className="item"
+      onClick={pickHourlyForecast(data, key)}
+      type="button"
+    >
+      <p className="item__day">{getDay(data)}</p>
+      <p className="item__highest-temp">{`${mathRound(data.temp.max)}°`}</p>
+      <p className="item__lowest-temp">{`${mathRound(data.temp.min)}°`}</p>
+      <div>
+        <img
+          className="item__weather"
+          src={`./weatherIcons/${data.weather[0].main}.png`}
+          alt="Weather"
+        />
+      </div>
+      <p className="item__humidity">{`%${data.humidity}`}</p>
+      <hr className="item__separator" />
+    </button>
   );
 };
 

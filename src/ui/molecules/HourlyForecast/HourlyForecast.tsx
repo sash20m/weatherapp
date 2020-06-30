@@ -1,15 +1,17 @@
-import './HourlyForecast.scss';
 import React, { useState, useEffect } from 'react';
+
 import { useLocation } from 'react-router-dom';
+import { HourlyForecast } from '../../organisms/HourlyBar/HourlyBar';
 import HourlyForecastItems from '../../atoms/HourlyForecastItems/HourlyForecastItems';
-import { hourlyForecast } from '../../organisms/HourlyBar/HourlyBar';
+
+import './HourlyForecast.scss';
 
 interface Props {
-  data: hourlyForecast[][];
+  data: HourlyForecast[][];
 }
 
-const HourlyForecast = ({ data }: Props) => {
-  const [hourForecast, setHourForecast] = useState<hourlyForecast[][] | null>(
+const HourForecast = ({ data }: Props) => {
+  const [hourForecast, setHourForecast] = useState<HourlyForecast[][] | null>(
     null
   );
   const [position, setPosition] = useState<number>(0);
@@ -30,4 +32,4 @@ const HourlyForecast = ({ data }: Props) => {
   );
 };
 
-export default HourlyForecast;
+export default HourForecast;
